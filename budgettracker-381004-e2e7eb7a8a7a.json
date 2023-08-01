@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "budgettracker-381004",
+  "private_key_id": "e2e7eb7a8a7a023ba9041b2d47650aa94047462b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC8OcHirDN0/p2H\n7ZtodhFh9J1dDbQuWlkfgsA1zVBYDd3MS67EIzhuoemglWK/saSd5JJ6WspGoNMc\nDUIQCR1w9HQaWUF8OCnHS9x/urCHkEoqtOK925adcjk8jCGuI03uBV3EC7Yem39D\nWsN4nJKGnv1QZGRPhF8fqsbql3/EXOMNoqpll0hAvKKWQ3YNMIVaE6bu5FuVK0dz\nhWjJ/W1Xi+ZrpVYEMPOtYBXb5BKdsdjM6VR4QwEKPDTAOwOTkI+kY5vaWXkeG7sR\nqFsUUF7isOLCCy068dtQhvmZwqaUrxpekj0HCeAeHWl+ZjHphfcvTzaGqPgXeYdu\nk7R8so5lAgMBAAECggEAKndVeRCk42Z2oC5Je733mgQYZOAsoLCdnvBe8USLNfKa\n8fa5TWMs3jkFfsd1ag5oN39UVOqa7GhoeNG87+U+kTd14mP01FPPiTliXCcAoPU6\n5nu9FFywlIEqzLBJAQLSGDt5tjt2MV2fztBxfYrFvD2upS6hOxeAZqKfElpv5xsy\nFU/f/7yDq4ALRXN2u4vtHLa9yrZyXIFdtxgZNK0uhvQ64+BAKMV+9tVm8HnU9WO4\n5Ns3mIb0q4NF/M+hF1OjjE+NlPScwgQic3WUsrzs9BI7c46LysQWCtkuYM9THfB6\nQCEloCGT7htyVVblGrAFg0gjKt4zjMpykzyCWoaRmQKBgQD3T3IUk0ZLdAL+untm\nbV/h23LL170ZFkW+94o5WJogHFLxG0n2BS3j2nyBGD25W6PM44UyIj5DFt5EGzOk\nhEE8XLlKXOkQQxcU3IX9/3VKuWln5aUQkZrtSORdPt7a4KyGH+deEfaq3sPspHif\nlusk7xKTfCubFZl1nBA8SbVwXwKBgQDC1thd3teyu0cmEOv3ZvroQOPrlR+fhdyG\ntdjCsxqZGPaC1YOTpHeoG/JEXJXgNtvDQOR9aQ3UCOf5KVi2cVPG76h8JF/LHfjV\nTsrkZk5KDwu4rKXWahy1DTlAzOw+/Yfs+/N0P5J/QGYwNRSfoHZSEpHHGvLYv5Be\nUdHNvtUnuwKBgQCZcDQSafGCHN9C1cZ8HT4Q7kuCBz8uknABdKnQvJUbeRdIuiqg\nNkRriwIWQkkBeMbe9waLvU0t6MFMNihLWTb0UX8wkQaU7VsjuVJ07YsDKpgoOwW3\niu85azEsXTZ9TEoeCStOZQzKpN2gM8cXFNadmqrG0JJpbPRCUOqNzRmCNwKBgQC7\n/tdIQ9N2JlOxPBSiY5/nZ21Di2C26E9vP5kFzBD29eotNV0+oSu/bi+lnHwUmnoT\nfNK62xm3pFxHwohRiSmfwvCbz/EKKEJHdz43gSs7NCdIKnXdXAeU/kxm5RNyd+im\nVjiCyzBMTlQLYbwjhY2FBVvZdHwrfTMMfv/j+KTtLwKBgQC201UAvptqOQs42JPP\nZMIaN2Jj5NBC2+6VO2FBxsniIGRd4ISH/UOp6q1CssLglUuu/TOJsgVWO+a8lcYt\ntzlS/zRXx2DbH3l1yxCuWYD8hP/cRi66/bWB4+Dq3q0yo4kjlPA7915Axm1U/uZo\nwwyI8ZZpTjbVNHsVf8zZCafyFg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "googledrive@budgettracker-381004.iam.gserviceaccount.com",
+  "client_id": "102521762303369176654",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/googledrive%40budgettracker-381004.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
