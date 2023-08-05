@@ -14,6 +14,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 path = r"/home/sohrab-salehin/Documents/python_scripts/GitHub/budget_tracker/"
 
+# Importing files
+
+
+# This block of code is for reading Spending sheet of marketing for non voucher spendings
 
 # Replace 'your-credentials.json' with the actual name of your credentials JSON file
 scope = [
@@ -57,8 +61,7 @@ marketing_spending.dropna(subset=["Cost_TT"], inplace=True)
 marketing_spending["Cost_TT"] = marketing_spending["Cost_TT"].astype(float)
 
 ############################################################ Importing files ######################################################
-channel_defenition= pd.read_excel(path +'channel_defenition.xlsx')
-
+channel_defenition= pd.read_excel(path +'channel_defenition.xlsx')      # for converting action in channels of maketing spending sheet to BP report
 date_from= input("Enter from date: ")
 date_to= input("Enter to date: ")
 
@@ -73,7 +76,7 @@ marketing_spending['Cost_TT']= marketing_spending['Cost_TT']*10
 table_rows= ['adwords', 'loyalty', 'crm' ,'campaign', 'affiliate','cross_sell','other_voucher','other', 'pr', 'sms','social','display', 'seo','offline', 'total']
 table_columns= ['BDG', 'orders', 'tickets', 'cpo', 'cpt', 'os']
 
-big_table= pd.DataFrame()
+big_table= pd.DataFrame()   # Big table is output of this code which is actuals of budget tracker for all verticals
 
 ################################################## Dom. Hotel ############################################
 hotel = pd.read_csv(
