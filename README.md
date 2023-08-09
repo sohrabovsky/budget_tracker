@@ -21,4 +21,77 @@ Please note that forecasting each marketing channel separately is not something 
 at the end of the month and after that, I will breakdown this overall sales to each marketing channels according to people insights and each
 marketing channel share from total sales.
 
-The output of the code.py is stored in a .csv file named big_table.csv which is actual report.
+The output of the actuals.py is stored in a .csv file named big_table.csv which is actual report.
+The output of the forecasting.py is stored in a .csv file named table.csv which is forecast report.
+
+Some definitions for this report:
+
+Adwords: 
+* Type: Performance Channel
+* Costs Source: Marketing Spending Sheet (Google Sheet)
+* Source Link: https://docs.google.com/spreadsheets/d/1zxPndjoFHYjo0Mbt-BBtSJgwWwDn7q7u45uIb0O96fs/edit#gid=375972121
+* Subcategories: None
+* Order Source: Imported from Adwords channel by asking ads operators:
+    * Hedie Razi - Dom. Hotel, Dom. Flight, Int. Flight
+    * Hanieh - Bus, Train
+
+
+
+Vouchers:
+* Type: Performance Channel
+* Source Name: Metabase
+* Source Link:
+    * Dom. Hotel: Marketing Hotel Prefix With Utm
+        * Filters: fulfilled is 1
+    * Dom. Flight: Flight UTM & Discount Data Per Order
+        * Filters: None
+    * Bus: Bus Book Ticket New
+        * Filters: None
+    * Int-Flight: Flight International Marketing Discount Prefix and Tag- Distinct
+        * Filters: None
+    * Int-Hotel: Marketing Int Hotel Prefixes
+        * Filters: Fulfilled is 1
+    * Train: Train Tickets
+        * Filters: None
+* Subcategories:
+    * Loyalty:
+        * Channel Definition: Snapp loyalty club (کلاب اسنپ)
+    * CRM:
+        * Channel Definition: Journeys of webengage
+    * Campaign:
+        * Channel Definition: Jek, Snapptrip, and Social campaigns
+    * Affiliate:
+        * Channel Definition: vouchers that are allocated to affiliators such as: Takhfifan, Mopon, etc.
+    * Other Voucher: 
+        * Channel Definition: vouchers that are rare and are not in other ordinary voucher categories
+    * Cross Sell: 
+        * Channel Definition: Journeys of webengage that are related to cross selling. Just measured in dom. Hotel
+
+PR/Backlink:
+* Type: Non-Performance Channel
+* Cost Source: Marketing Spending Sheet (owner: Bahar)
+* Channel Definition: backlinks and reportage articles to enhance SEO
+
+SMS:
+* Type: Non-Performance Channel
+* Cost Source: Marketing Spending Sheet (owners: Omid and Hanieh)
+* Channel Definition: SMS costs for campaigns and webengage journeys
+    
+Social:
+* Type: Non-Performance Channel
+* Cost Source: Marketing Spending Sheet (owners: Khatereh, Asra)
+* Channel Definition: Cost of social campaigns and tools
+
+Content (SEO):
+* Type: Non-Performance Channel
+* Cost Source: Marketing Spending Sheet (owners: Bahar)
+* Channel Definition: Cost of social campaigns and tools
+
+Offline:
+* Type: Non-Performance Channel
+* Cost Source: Marketing Spending Sheet (owners: Omid)
+* Channel Definition: Cost of offline (not online) activities
+
+Deduplicate:
+This is a line in report for adjustment of orders duplicated by various channels( Adwords vs voucher)
+
