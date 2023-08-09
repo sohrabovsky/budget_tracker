@@ -82,7 +82,7 @@ big_table= pd.DataFrame()   # Big table is output of this code which is actuals 
 hotel = pd.read_csv(
     path + "hotel.csv",
     parse_dates=["Registered Date"],
-    dtype={"Booking ID": str, "Mobile": str, "Discount Code": str, "Utm Campaign": str},
+    dtype={"Booking ID": str, "Mobile": str, "discount_code": str, "Utm Campaign": str},
 ).rename(
     columns={
         "Registered Date": "date",
@@ -541,8 +541,9 @@ bus = pd.read_csv(
 bus = bus[bus["Ticket Status"] != "FAILED"]
 bus[(bus['date'] >= date_from) & (bus['date'] <= date_to)]
 
+bus['discount_code'] = bus['discount_code'].str.lower()
 # channel_type
-index = bus[bus["tag"].str.contains("loyalty", na=False, case=False)].index
+index = bus[bus["discount_code"].str.startswith("slb", na=False)].index
 bus.loc[index, "marketing_channel"] = "loyalty"
 
 index = bus[bus["tag"].str.contains("journey", na=False, case=False)].index
@@ -699,14 +700,18 @@ big_table= pd.concat([big_table, table], axis= 0)
 intflight = pd.read_csv(
                         path + "intflight.csv",
                         parse_dates= ['booking_date'],
-                        dtype={"phone_number": str})
-
-intflight = intflight.dropna(subset="refrence_no")
-intflight["discount_name"] = intflight["discount_name"].str.lower()
+                        dtype={"phone_number": str}).rename(
+                            columns= {
+                                'refrence_no' : 'invoiceID',
+                                'discount_name' : 'discount_code',
+                                'order_voucher_amount' : 'discount_amount'
+                                })
+intflight = intflight.dropna(subset="invoiceID")
+intflight["discount_code"] = intflight["discount_code"].str.lower()
 intflight[(intflight['booking_date'] >= date_from) & (intflight['booking_date'] <= date_to)]
 
 
-
+intflight['discount_code']= intflight['discount_code'].str.lower()
 # channel definitions
 
 index = intflight[intflight["discount_code_tag"].str.contains("journey", case=False, na=False)].index
@@ -721,15 +726,15 @@ index = intflight[intflight["discount_code_tag"].str.contains("campaign", case=F
 intflight.loc[index, "marketing_channel"] = "campaign"
 
 
-index = intflight[intflight["discount_code_tag"].str.contains("loyalty", case=False, na=False)].index
+index = intflight[intflight["discount_code"].str.startswith("slif", na=False)].index
 intflight.loc[index, "marketing_channel"] = "loyalty"
 
 index = intflight[
-    (intflight["marketing_channel"].isna()) & (intflight["discount_name"].notna())
+    (intflight["marketing_channel"].isna()) & (intflight["discount_code"].notna())
 ].index
 intflight.loc[index, "marketing_channel"] = "other_voucher"
 
-index = intflight[intflight["discount_name"].isna()].index
+index = intflight[intflight["discount_code"].isna()].index
 intflight.loc[index, "marketing_channel"] = "organic"
 
 
@@ -742,21 +747,21 @@ intflight_marketing_costs= marketing_spending[marketing_spending['Product'] == '
 table.loc['adwords', 'BDG']= intflight_marketing_costs[intflight_marketing_costs['channel_type'] == 'adwords']['Cost_TT'].sum()
 
 df= intflight[intflight['marketing_channel'] == 'loyalty']
-table.loc['loyalty', 'BDG']= float(df.groupby("refrence_no")["order_voucher_amount"].unique().sum())
+table.loc['loyalty', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= intflight[intflight['marketing_channel'] == 'crm']
-table.loc['crm', 'BDG']= float(df.groupby("refrence_no")["order_voucher_amount"].unique().sum())
+table.loc['crm', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= intflight[intflight['marketing_channel'] == 'campaign']
-table.loc['campaign', 'BDG']= float(df.groupby("refrence_no")["order_voucher_amount"].unique().sum())
+table.loc['campaign', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= intflight[intflight['marketing_channel'] == 'affiliate']
 table.loc['affiliate', 'BDG']= (
-                                float(df.groupby("refrence_no")["order_voucher_amount"].unique().sum()) + 
+                                float(df.groupby("invoiceID")["discount_amount"].unique().sum()) + 
                                 intflight_marketing_costs[intflight_marketing_costs['channel_type'] == 'affiliate']['Cost_TT'].sum()
                                 )
 df= intflight[intflight['marketing_channel'] == 'other_voucher']
-table.loc['other_voucher', 'BDG']= float(df.groupby("refrence_no")["order_voucher_amount"].unique().sum())
+table.loc['other_voucher', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
     
 table.loc['display', 'BDG']= intflight_marketing_costs[intflight_marketing_costs['channel_type'] == 'display']['Cost_TT'].sum()
 
@@ -777,36 +782,36 @@ table.loc['total', 'BDG']= table.loc[:, 'BDG'].sum()
 # Orders
 
 table.loc['adwords', 'orders']= int(input("int. flight adwords orders: "))
-table.loc['loyalty', 'orders']= intflight[intflight['marketing_channel'] == 'loyalty']['refrence_no'].nunique()
-table.loc['crm', 'orders']= intflight[intflight['marketing_channel'] == 'crm']['refrence_no'].nunique()
-table.loc['campaign', 'orders']= intflight[intflight['marketing_channel'] == 'campaign']['refrence_no'].nunique()
-table.loc['affiliate', 'orders']= intflight[intflight['marketing_channel'] == 'affiliate']['refrence_no'].nunique()
-table.loc['other_voucher', 'orders']= intflight[intflight['marketing_channel'] == 'other_voucher']['refrence_no'].nunique()
+table.loc['loyalty', 'orders']= intflight[intflight['marketing_channel'] == 'loyalty']['invoiceID'].nunique()
+table.loc['crm', 'orders']= intflight[intflight['marketing_channel'] == 'crm']['invoiceID'].nunique()
+table.loc['campaign', 'orders']= intflight[intflight['marketing_channel'] == 'campaign']['invoiceID'].nunique()
+table.loc['affiliate', 'orders']= intflight[intflight['marketing_channel'] == 'affiliate']['invoiceID'].nunique()
+table.loc['other_voucher', 'orders']= intflight[intflight['marketing_channel'] == 'other_voucher']['invoiceID'].nunique()
 
 table.loc['display', 'orders']= 0
 table.loc['sms', 'orders']= 0
 table.loc['seo', 'orders']= 0
 table.loc['pr', 'orders']= 0
 table.loc['social', 'orders']= 0
-table.loc['other', 'orders']= intflight[intflight['marketing_channel'] == 'organic']['refrence_no'].nunique()
-table.loc['total', 'orders']= intflight['refrence_no'].nunique()
+table.loc['other', 'orders']= intflight[intflight['marketing_channel'] == 'organic']['invoiceID'].nunique()
+table.loc['total', 'orders']= intflight['invoiceID'].nunique()
 
 
 # Tickets
 
-table.loc['loyalty', 'tickets']= intflight[intflight['marketing_channel'] == 'loyalty']['refrence_no'].count()
-table.loc['crm', 'tickets']= intflight[intflight['marketing_channel'] == 'crm']['refrence_no'].count()
-table.loc['campaign', 'tickets']= intflight[intflight['marketing_channel'] == 'campaign']['refrence_no'].count()
-table.loc['affiliate', 'tickets']= intflight[intflight['marketing_channel'] == 'affiliate']['refrence_no'].count()
-table.loc['other_voucher', 'tickets']= intflight[intflight['marketing_channel'] == 'other_voucher']['refrence_no'].count()
+table.loc['loyalty', 'tickets']= intflight[intflight['marketing_channel'] == 'loyalty']['invoiceID'].count()
+table.loc['crm', 'tickets']= intflight[intflight['marketing_channel'] == 'crm']['invoiceID'].count()
+table.loc['campaign', 'tickets']= intflight[intflight['marketing_channel'] == 'campaign']['invoiceID'].count()
+table.loc['affiliate', 'tickets']= intflight[intflight['marketing_channel'] == 'affiliate']['invoiceID'].count()
+table.loc['other_voucher', 'tickets']= intflight[intflight['marketing_channel'] == 'other_voucher']['invoiceID'].count()
 
 table.loc['display', 'tickets']= 0
 table.loc['sms', 'tickets']= 0
 table.loc['seo', 'tickets']= 0
 table.loc['pr', 'tickets']= 0
 table.loc['social', 'tickets']= 0
-table.loc['other', 'tickets']= intflight[intflight['marketing_channel'] == 'organic']['refrence_no'].count()
-table.loc['total', 'tickets']= intflight['refrence_no'].count()
+table.loc['other', 'tickets']= intflight[intflight['marketing_channel'] == 'organic']['invoiceID'].count()
+table.loc['total', 'tickets']= intflight['invoiceID'].count()
 table.loc['adwords', 'tickets']= table.loc['adwords', 'orders']*table.loc['total', 'tickets']/table.loc['total', 'orders']
 
 # CPO
@@ -1083,16 +1088,23 @@ big_table= pd.concat([big_table, table], axis= 0)
 ################################################## Train ############################################
 train = pd.read_csv(
     path + "train.csv",
-    dtype={ "Paid At" : str,
-            "Order ID": str,
-           "Discount Code": str,
+    dtype={ "date" : str,
+            "invoiceID": str,
+           "discount_code": str,
            "Mobile Number": str},
-)
-train["Paid At"] = train["Paid At"].str[:10]
+).rename(
+    columns= {
+        'Order ID' : 'invoiceID',
+        'Discount Code' : 'discount_code',
+        'Paid At' : 'date',
+        'Discount Price' : 'discount_amount'
+        }
+    )
+train["date"] = train["date"].str[:10]
 train["Mobile Number"] = train["Mobile Number"].str[-10:]
-train = train.sort_values(by="Paid At")
-train= train[(train['Paid At'] >= date_from) & (train['Paid At'] <= date_to)]
-train["Discount Price"].fillna(0, inplace=True)
+train = train.sort_values(by="date")
+train= train[(train['date'] >= date_from) & (train['date'] <= date_to)]
+train["discount_amount"].fillna(0, inplace=True)
 
 # tagging
 
@@ -1111,10 +1123,10 @@ tags_sheet= tags_sheet.rename(
     columns={"discountcategory ": "discount_category"}
 )
 tags_sheet["discountcode"] = tags_sheet["discountcode"].str.lower()
-train["Discount Code"] = train["Discount Code"].str.lower()
+train["discount_code"] = train["discount_code"].str.lower()
 
-for discount_code in train["Discount Code"].unique():
-    index = train[train["Discount Code"] == discount_code].index
+for discount_code in train["discount_code"].unique():
+    index = train[train["discount_code"] == discount_code].index
     try:
         tag = tags_sheet[tags_sheet["discountcode"].str[:5] == discount_code[:5]][
             "discount_category"
@@ -1139,10 +1151,10 @@ train.loc[index, "marketing_channel"] = "campaign"
 index = train[train["tag"].str.contains("loyalty", case=False, na=False)].index
 train.loc[index, "marketing_channel"] = "loyalty"
 
-index = train[(train["marketing_channel"].isna()) & (train["Discount Code"].notna())].index
+index = train[(train["marketing_channel"].isna()) & (train["discount_code"].notna())].index
 train.loc[index, "marketing_channel"] = "other_voucher"
 
-index = train[train["Discount Code"].isna()].index
+index = train[train["discount_code"].isna()].index
 train.loc[index, "marketing_channel"] = "organic"
 
 table_rows= ['adwords', 'loyalty', 'crm', 'campaign', 'affiliate', 'other_voucher', 'display', 'sms', 'seo', 'pr', 'social', 'other', 'total']
@@ -1157,22 +1169,22 @@ train_marketing_costs= marketing_spending[marketing_spending['Product'] == 'Trai
 table.loc['adwords', 'BDG']= train_marketing_costs[train_marketing_costs['channel_type'] == 'adwords']['Cost_TT'].sum()
 
 df= train[train['marketing_channel'] == 'loyalty']
-table.loc['loyalty', 'BDG']= float(df.groupby("Order ID")["Discount Price"].unique().sum())
+table.loc['loyalty', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= train[train['marketing_channel'] == 'crm']
-table.loc['crm', 'BDG']= float(df.groupby("Order ID")["Discount Price"].unique().sum())
+table.loc['crm', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= train[train['marketing_channel'] == 'campaign']
-table.loc['campaign', 'BDG']= float(df.groupby("Order ID")["Discount Price"].unique().sum())
+table.loc['campaign', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
 
 df= train[train['marketing_channel'] == 'affiliate']
 table.loc['affiliate', 'BDG']= (
-                                float(df.groupby("Order ID")["Discount Price"].unique().sum()) + 
+                                float(df.groupby("invoiceID")["discount_amount"].unique().sum()) + 
                                 train_marketing_costs[train_marketing_costs['channel_type'] == 'affiliate']['Cost_TT'].sum()
                                 )
 
 df= train[train['marketing_channel'] == 'other_voucher']
-table.loc['other_voucher', 'BDG']= float(df.groupby("Order ID")["Discount Price"].unique().sum())
+table.loc['other_voucher', 'BDG']= float(df.groupby("invoiceID")["discount_amount"].unique().sum())
    
 table.loc['display', 'BDG']= train_marketing_costs[train_marketing_costs['channel_type'] == 'display']['Cost_TT'].sum()
 
@@ -1193,19 +1205,19 @@ table.loc['total', 'BDG']= table.loc[:, 'BDG'].sum()
 # Orders
 
 table.loc['adwords', 'orders']= int(input("Train adwords orders: "))
-table.loc['loyalty', 'orders']= train[train['marketing_channel'] == 'loyalty']['Order ID'].nunique()
-table.loc['crm', 'orders']= train[train['marketing_channel'] == 'crm']['Order ID'].nunique()
-table.loc['campaign', 'orders']= train[train['marketing_channel'] == 'campaign']['Order ID'].nunique()
-table.loc['affiliate', 'orders']= train[train['marketing_channel'] == 'affiliate']['Order ID'].nunique()
-table.loc['other_voucher', 'orders']= train[train['marketing_channel'] == 'other_voucher']['Order ID'].nunique()
+table.loc['loyalty', 'orders']= train[train['marketing_channel'] == 'loyalty']['invoiceID'].nunique()
+table.loc['crm', 'orders']= train[train['marketing_channel'] == 'crm']['invoiceID'].nunique()
+table.loc['campaign', 'orders']= train[train['marketing_channel'] == 'campaign']['invoiceID'].nunique()
+table.loc['affiliate', 'orders']= train[train['marketing_channel'] == 'affiliate']['invoiceID'].nunique()
+table.loc['other_voucher', 'orders']= train[train['marketing_channel'] == 'other_voucher']['invoiceID'].nunique()
 
 table.loc['display', 'orders']= 0
 table.loc['sms', 'orders']= 0
 table.loc['seo', 'orders']= 0
 table.loc['pr', 'orders']= 0
 table.loc['social', 'orders']= 0
-table.loc['other', 'orders']= train[train['marketing_channel'] == 'organic']['Order ID'].nunique()
-table.loc['total', 'orders']= train['Order ID'].nunique()
+table.loc['other', 'orders']= train[train['marketing_channel'] == 'organic']['invoiceID'].nunique()
+table.loc['total', 'orders']= train['invoiceID'].nunique()
 
 
 # Tickets
@@ -1304,6 +1316,7 @@ table.loc['pr', 'cpt']= 0
 table.loc['social', 'cpt']= 0
 table.loc['other', 'cpt']= 0
 table.loc['total', 'cpt']= table.loc['total', 'BDG'] / table.loc['total', 'tickets']
+
 # OS
 table.loc['adwords', 'os']= table.loc['adwords', 'orders'] / table.loc['total', 'orders']
 table.loc['loyalty', 'os']= table.loc['loyalty', 'orders'] / table.loc['total', 'orders']
@@ -1349,6 +1362,3 @@ table.loc[:,'vertical'] = 'brand'
 big_table= pd.concat([big_table, table], axis= 0)
 
 big_table.to_csv(path + "big_table.csv")
-
-
-train[train['marketing_channel'] == 'campaign'].to_clipboard()

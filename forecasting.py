@@ -23,8 +23,8 @@ from statsmodels.tsa.arima.model import ARIMA
 sns.set_theme()
 
 number_of_forecasting_days = int(input('Please specify number of days for forecasting: '))
-tracker_first_date= input('sales data for analyzing ARIMA from date: ')
-tracker_last_date= input('sales data for analyzing ARIMA to date: ')
+tracker_first_date= input('Actual month date from: ')
+tracker_last_date= input('Actual month date to: ')
 
 
 # Table for having overal forecasts:
@@ -67,7 +67,7 @@ plt.title("dom. Hotel Forecast")
 plt.xlabel("Dates")
 plt.ylabel("Room Nights")
 plt.show()
-table.loc['dom. Hotel', 'Forecasted tickets/roomnights']
+table.loc['dom. Hotel', 'Forecasted tickets/roomnights']= hotel_forecast
 
 # dom. Flight
 
@@ -82,7 +82,6 @@ flight = pd.read_csv(
         "Distinct values of Ticket ID": "item",
     }
 )
-flight = flight[flight.index >= "2023-06-07"]
 
 flight_sales = pd.pivot_table(
     flight, index=flight.index, values="item", aggfunc={"item": "sum"}
@@ -112,7 +111,7 @@ plt.xlabel("Dates")
 plt.ylabel("Tickets")
 plt.legend()
 plt.show()
-table.loc['dom. Flight', 'Forecasted tickets/roomnights']
+table.loc['dom. Flight', 'Forecasted tickets/roomnights']= flight_forecast
 
 # Bus
 
@@ -143,7 +142,7 @@ plt.title("Bus Forecast")
 plt.xlabel("Dates")
 plt.ylabel("Tickets")
 plt.show()
-table.loc['Bus', 'Forecasted tickets/roomnights']
+table.loc['Bus', 'Forecasted tickets/roomnights']= bus_forecast
 
 # Int. Flight
 
@@ -174,7 +173,7 @@ plt.title("Intflight Forecast")
 plt.xlabel("Dates")
 plt.ylabel("Tickets")
 plt.show()
-table.loc['Int. Flight', 'Forecasted tickets/roomnights']
+table.loc['Int. Flight', 'Forecasted tickets/roomnights']= intflight_forecast
 
 # Int. Hotel
 
@@ -204,7 +203,7 @@ plt.title("Int-Hotel Forecast")
 plt.xlabel("Dates")
 plt.ylabel("Room Nights")
 plt.show()
-table.loc['Int. Hotel', 'Forecasted tickets/roomnights']
+table.loc['Int. Hotel', 'Forecasted tickets/roomnights']= inthotel_forecast
 
 # Train
 
@@ -234,5 +233,6 @@ plt.title("Train Forecast")
 plt.xlabel("Dates")
 plt.ylabel("Tickets")
 plt.show()
-table.loc['Train', 'Forecasted tickets/roomnights']
+table.loc['Train', 'Forecasted tickets/roomnights']= train_forecast
 
+table.to_csv('table.csv')
