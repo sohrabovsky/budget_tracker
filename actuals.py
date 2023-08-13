@@ -161,11 +161,7 @@ index4= hotel_b2c[
     ].index
 hotel_b2c.loc[index4, 'marketing_channel']= 'affiliate'
 
-utm_campaign = hotel_non_voucher.dropna(subset=["utm_campaign"])
-utm_campaign = utm_campaign[utm_campaign["utm_campaign"].str.isdigit()]
-index5 = pd.concat(
-    [pd.Series(index1), pd.Series(utm_campaign.index)]
-)
+index5 = hotel_non_voucher[hotel_non_voucher['Books From Adwords'] == 1]
 hotel_adwords = hotel_b2c[hotel_b2c.index.isin(index5)]  ### Based on Metabase
 
 hotel_adwords_orders= int(input("Hotel adwords orders: "))
